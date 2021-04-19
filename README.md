@@ -2,4 +2,4 @@
 
 A simple online flow chart editor.
 
-https://flowkit.vercel.all
+https://flowkit.vercel.app
