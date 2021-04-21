@@ -203,7 +203,7 @@ const Editor = () => {
           <span className="ml-2">Copy Share URL</span>
         </button>
         {activeNode && activeNodeId && (
-          <div className="" key={activeNodeId}>
+          <div className="border-b" key={activeNodeId}>
             <div className="divide-y border-b">
               <div className="px-3 min-h-10 py-3 flex items-start justify-between">
                 <span className="font-bold text-gray-700 text-sm">Text</span>
@@ -333,6 +333,11 @@ const Editor = () => {
             </div>
           </div>
         )}
+        <div className="mt-3 text-xs px-3 text-center text-gray-600">
+          <a target="_blank" href="https://github.com/egoist/flowkit">
+            star this on github
+          </a>
+        </div>
 
         <button
           onClick={() => addNewNode()}
