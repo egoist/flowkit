@@ -7,6 +7,7 @@ import ReactFlow, {
   OnLoadParams,
   useZoomPanHelper,
   ReactFlowProvider,
+  isEdge,
 } from 'react-flow-renderer'
 
 const getDefaultNodeStyle = () => ({
@@ -58,7 +59,13 @@ const Editor = () => {
       style: getDefaultNodeStyle(),
     },
     // animated edge
-    { id: 'e1-2', source: '1', target: '2', animated: true, style: {} },
+    {
+      id: 'e1-2',
+      source: '1',
+      target: '2',
+      animated: true,
+      style: {},
+    },
     { id: 'e2-3', source: '2', target: '3', style: {} },
   ])
 
@@ -131,11 +138,18 @@ const Editor = () => {
   const updateNodeLabel = (id: string, label: string) => {
     setElements(
       elements.map((element) => {
+        if (element.id !== id) return element
+        if (isEdge(element)) {
+          return {
+            ...element,
+            label,
+          }
+        }
         return {
           ...element,
           data: {
             ...element.data,
-            label: id === element.id ? label : element.data?.label,
+            label,
           },
         }
       }),
@@ -182,25 +196,22 @@ const Editor = () => {
         {activeNode && activeNodeId && (
           <div className="">
             <div className="divide-y border-b">
-              {
-                /* @ts-expect-error */
-                !activeNode.source && (
-                  <div className="px-3 min-h-10 py-3 flex items-start justify-between">
-                    <span className="font-bold text-gray-700 text-sm">
-                      Text
-                    </span>
-                    <span>
-                      <textarea
-                        value={activeNode.data.label}
-                        className="bg-gray-100"
-                        onChange={(e) =>
-                          updateNodeLabel(activeNodeId, e.target.value)
-                        }
-                      ></textarea>
-                    </span>
-                  </div>
-                )
-              }
+              <div className="px-3 min-h-10 py-3 flex items-start justify-between">
+                <span className="font-bold text-gray-700 text-sm">Text</span>
+                <span>
+                  <textarea
+                    value={
+                      isEdge(activeNode)
+                        ? activeNode.label || ''
+                        : activeNode.data.label
+                    }
+                    className="bg-gray-100"
+                    onChange={(e) =>
+                      updateNodeLabel(activeNodeId, e.target.value)
+                    }
+                  ></textarea>
+                </span>
+              </div>
               <div className="px-3 h-10 flex items-center justify-between">
                 <span className="font-bold text-gray-700 text-sm">
                   Text Color
