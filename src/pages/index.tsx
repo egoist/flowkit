@@ -4,6 +4,9 @@ import ReactFlow, {
   addEdge,
   Edge,
   Connection,
+  OnLoadParams,
+  useZoomPanHelper,
+  ReactFlowProvider,
 } from 'react-flow-renderer'
 
 const getDefaultNodeStyle = () => ({
@@ -14,7 +17,23 @@ const getDefaultNodeStyle = () => ({
   color: '#333333',
 })
 
-export default function Page() {
+const Editor = () => {
+  const [flowInstance, setFlowInstance] = React.useState<OnLoadParams | null>(
+    null,
+  )
+
+  const { transform } = useZoomPanHelper()
+
+  const restoreFlow = async () => {
+    const flow = location.hash && JSON.parse(atob(location.hash.slice(1)))
+
+    if (flow) {
+      const [x = 0, y = 0] = flow.position
+      setElements(flow.elements || [])
+      transform({ x, y, zoom: flow.zoom || 0 })
+    }
+  }
+
   const [elements, setElements] = React.useState<Elements>([
     {
       id: '1',
@@ -42,13 +61,24 @@ export default function Page() {
     { id: 'e1-2', source: '1', target: '2', animated: true, style: {} },
     { id: 'e2-3', source: '2', target: '3', style: {} },
   ])
+
+  const getShareUrl = () => {
+    return (
+      location.origin + '/#' + btoa(JSON.stringify(flowInstance!.toObject()))
+    )
+  }
+
+  const copyShareURL = async () => {
+    await navigator.clipboard.writeText(getShareUrl())
+    alert('Sharable URL has been copied to clipboard.')
+  }
+
   const [activeNodeId, setActiveNodeId] = React.useState<string | null>(null)
 
   const activeNode = elements.find((element) => element.id === activeNodeId)
 
   const onConnect = (params: Edge<any> | Connection) => {
-    console.log(params)
-    setElements((els) => addEdge(params, els))
+    setElements(addEdge(params, elements))
   }
 
   const handleChangeElementStyle = (
@@ -112,10 +142,15 @@ export default function Page() {
     )
   }
 
+  React.useEffect(() => {
+    restoreFlow()
+  }, [])
+
   return (
     <div className="flex h-screen">
       <div className="h-full w-full">
         <ReactFlow
+          onLoad={setFlowInstance}
           elements={elements}
           onConnect={onConnect}
           onElementClick={(e, element) => {
@@ -124,6 +159,26 @@ export default function Page() {
         />
       </div>
       <div className="border-l w-72 relative">
+        <button
+          onClick={copyShareURL}
+          className="flex items-center text-sm w-full justify-center border-b px-3 py-3 hover:bg-gray-50"
+        >
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+            />
+          </svg>
+          <span className="ml-2">Copy Share URL</span>
+        </button>
         {activeNode && activeNodeId && (
           <div className="">
             <div className="divide-y border-b">
@@ -251,5 +306,13 @@ export default function Page() {
         </button>
       </div>
     </div>
+  )
+}
+
+export default function Page() {
+  return (
+    <ReactFlowProvider>
+      <Editor />
+    </ReactFlowProvider>
   )
 }
