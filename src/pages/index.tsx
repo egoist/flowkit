@@ -9,6 +9,7 @@ import ReactFlow, {
   ReactFlowProvider,
   isEdge,
 } from 'react-flow-renderer'
+import { toPng } from 'dom-to-image-retina'
 
 const getDefaultNodeStyle = () => ({
   fontSize: 14,
@@ -165,13 +166,21 @@ const Editor = () => {
     )
   }
 
+  const saveImage = async () => {
+    const url = await toPng(document.querySelector('.react-flow')!)
+    const a = document.createElement('a')
+    a.download = 'flowkit.png'
+    a.href = url
+    a.click()
+  }
+
   React.useEffect(() => {
     restoreFlow()
   }, [])
 
   return (
     <div className="flex h-screen">
-      <div className="h-full w-full">
+      <div className="h-full w-full relative">
         <ReactFlow
           onLoad={setFlowInstance}
           elements={elements}
@@ -180,6 +189,12 @@ const Editor = () => {
             setActiveNodeId(element.id)
           }}
         />
+        <button
+          onClick={saveImage}
+          className="absolute right-3 bottom-3 border rounded-md text-sm px-1 h-6 flex items-center cursor-pointer z-10 hover:bg-gray-100"
+        >
+          Save Image
+        </button>
       </div>
       <div className="border-l w-72 relative">
         <button

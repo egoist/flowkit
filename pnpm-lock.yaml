@@ -5,6 +5,7 @@ specifiers:
   '@types/react': ^17.0.3
   '@types/react-dom': ^17.0.3
   autoprefixer: ^10.2.5
+  dom-to-image-retina: ^1.0.2
   next: ^10.1.3
   postcss: ^8.2.10
   preact: ^10.5.13
@@ -16,6 +17,7 @@ specifiers:
   typescript: ^4.2.4
 
 dependencies:
+  dom-to-image-retina: 1.0.2
   next: 10.1.3_507781d099a67956587e23f5ac79078b
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
@@ -990,6 +992,10 @@ packages:
   /dlv/1.1.3:
     resolution: {integrity: sha512-+HlytyjlPKnIG8XuRG8WvmBP8xs8P71y+SKKS6ZXWoEgLuePxtDoUEiH7WkdePWrQ5JBpE6aoVqfZfJUQkjXwA==}
     dev: true
+
+  /dom-to-image-retina/1.0.2:
+    resolution: {integrity: sha512-dVeLvEQLEPme/xYMLiBWS4EA5J98JllcXAaUISwgZXXyyuYbHPHpkYVvNNZLpvaH7EgES7J5s+dQEegpYdzZbQ==}
+    dev: false
 
   /domain-browser/1.2.0:
     resolution: {integrity: sha512-jnjyiM6eRyZl2H+W8Q/zLMA481hzi0eszAaBUzIVnmYVDBbnLxVNnfu1HgEBvCbL+71FrxMl3E6lpKH7Ge3OXA==}
