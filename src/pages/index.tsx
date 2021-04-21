@@ -156,6 +156,15 @@ const Editor = () => {
     )
   }
 
+  const updateEdgeAnimated = (id: string, animated: boolean) => {
+    setElements((elements) =>
+      elements.map((element) => {
+        if (element.id !== id) return element
+        return { ...element, animated }
+      }),
+    )
+  }
+
   React.useEffect(() => {
     restoreFlow()
   }, [])
@@ -194,7 +203,7 @@ const Editor = () => {
           <span className="ml-2">Copy Share URL</span>
         </button>
         {activeNode && activeNodeId && (
-          <div className="">
+          <div className="" key={activeNodeId}>
             <div className="divide-y border-b">
               <div className="px-3 min-h-10 py-3 flex items-start justify-between">
                 <span className="font-bold text-gray-700 text-sm">Text</span>
@@ -212,6 +221,22 @@ const Editor = () => {
                   ></textarea>
                 </span>
               </div>
+              {isEdge(activeNode) && (
+                <div className="px-3 h-10 flex items-center justify-between">
+                  <span className="font-bold text-gray-700 text-sm">
+                    Animated
+                  </span>
+                  <span>
+                    <input
+                      type="checkbox"
+                      defaultChecked={activeNode.animated}
+                      onChange={(e) => {
+                        updateEdgeAnimated(activeNodeId, e.target.checked)
+                      }}
+                    />
+                  </span>
+                </div>
+              )}
               <div className="px-3 h-10 flex items-center justify-between">
                 <span className="font-bold text-gray-700 text-sm">
                   Text Color
